@@ -1,3 +1,3 @@
 import "./app.css";
 
-console.log("SNAKE...!");
+console.log("SNAKE!");
