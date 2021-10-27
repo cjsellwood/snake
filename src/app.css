@@ -85,6 +85,7 @@ video {
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
+  box-sizing: border-box;
 }
 /* HTML5 display-role reset for older browsers */
 article,
@@ -125,4 +126,29 @@ table {
 
 body {
   background-color: lightgreen;
+}
+
+#root {
+  padding: 8px;
+}
+
+.row {
+  display: flex;
+  /* grid-template-columns: repeat(12, 50px); */
+  height: 50px;
+}
+
+.square {
+  background-color: white;
+  width: 50px;
+  height: 50px;
+  border: 1px solid lightgreen;
+}
+
+.edge {
+  background-color: black;
+}
+
+.snake {
+  background-color: red;
 }
