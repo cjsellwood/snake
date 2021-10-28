@@ -5,15 +5,18 @@ type Grid = HTMLDivElement[][];
 class Board {
   private root: HTMLDivElement;
   private grid: Grid;
-  constructor(rootDiv: HTMLDivElement) {
+  constructor(height: number, width: number, rootDiv: HTMLDivElement) {
     this.root = rootDiv;
-    this.grid = this.generateGrid(12, 12);
+    this.grid = this.generateGrid(width, height);
 
     this.renderBoard();
   }
 
-  changeSquare(row: number, column: number) {
-    this.grid[row][column].classList.add("snake");
+  renderSnake(snake: SnakeParts) {
+    console.log(snake);
+    for (let part of snake) {
+      this.grid[part[0]][part[1]].classList.add("snake");
+    }
   }
 
   // Create grid elements
@@ -33,7 +36,6 @@ class Board {
       }
       grid.push(row);
     }
-    console.log(grid);
 
     return grid;
   }
@@ -51,4 +53,56 @@ class Board {
   }
 }
 
-const board = new Board(document.getElementById("root")! as HTMLDivElement);
+type SnakeParts = [number, number][];
+type Direction = "up" | "down" | "left" | "right";
+
+class Snake {
+  private length: number;
+  public parts: SnakeParts;
+  private direction: Direction;
+  constructor(height: number) {
+    this.length = 3;
+    // Random number between 1 and 10
+    const startHeight = Math.floor(Math.random() * (height - 2) + 1);
+    this.parts = [
+      [startHeight, 1],
+      [startHeight, 2],
+      [startHeight, 3],
+    ];
+    this.direction = "right";
+    document.addEventListener("keydown", (e) => {
+      e.preventDefault();
+      switch (e.key) {
+        case "d":
+        case "ArrowRight":
+          this.direction = "right";
+          break;
+        case "a":
+        case "ArrowLeft":
+          this.direction = "left";
+          break;
+        case "w":
+        case "ArrowUp":
+          this.direction = "up";
+          break;
+        case "s":
+        case "ArrowDown":
+          this.direction = "down";
+          break;
+        default:
+          break;
+      }
+    });
+  }
+}
+
+const height = 12;
+const width = 12;
+const board = new Board(
+  height,
+  width,
+  document.getElementById("root")! as HTMLDivElement
+);
+const snake = new Snake(height);
+
+board.renderSnake(snake.parts);
