@@ -147,6 +147,17 @@ class Snake {
     }
   }
 
+  hitSelf(): boolean {
+    let hitSelf: boolean = false;
+    const snakeHead = this.parts[0];
+    for (let part of this.parts.slice(1, this.parts.length)) {
+      if (snakeHead[0] === part[0] && snakeHead[1] === part[1]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   // Add snake controls with arrow keys or W A S D
   private addKeyListeners() {
     document.addEventListener("keydown", (e) => {
@@ -198,15 +209,30 @@ class Fruit {
   // Upon collection by snake
   collect() {
     this.collected += 1;
-    this.newFruit();
+    this.newFruit(snake.parts);
     board.renderFruit(this.position);
   }
 
-  newFruit() {
-    this.position = [
-      Math.floor(Math.random() * (height - 2 - 1 + 1) + 1),
-      Math.floor(Math.random() * (width - 2 - 1 + 1) + 1),
-    ];
+  newFruit(snake: Coordinate[]) {
+    let positionFree = false;
+    let row: number | undefined;
+    let col: number | undefined;
+
+    // Reposition fruit until it finds a free square
+    checkFree: while (!positionFree) {
+      row = Math.floor(Math.random() * (height - 2 - 1 + 1) + 1);
+      col = Math.floor(Math.random() * (width - 2 - 1 + 1) + 1);
+      for (let part of snake) {
+        if (part[0] === row && part[1] === col) {
+          console.log("Overlap");
+          continue checkFree;
+        }
+      }
+      positionFree = true;
+    }
+    if (row && col) {
+      this.position = [row, col];
+    }
   }
 }
 
@@ -228,9 +254,10 @@ const gameLoop = setInterval(() => {
   board.renderSnake(snake.parts);
   // Check if edge was hit
   const hitEdge = board.hitEdge(snake.parts);
+  const hitSelf = snake.hitSelf();
 
   // Game over
-  if (hitEdge) {
+  if (hitEdge || hitSelf) {
     clearInterval(gameLoop);
     console.log(fruit.collected);
   }
