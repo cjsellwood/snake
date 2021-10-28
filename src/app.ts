@@ -13,10 +13,24 @@ class Board {
   }
 
   renderSnake(snake: SnakeParts) {
-    console.log(snake);
+    // console.log(snake);
+
+    // Clear previous snake parts
+    for (let row of this.grid) {
+      for (let element of row) {
+        if (element.classList.contains("snake")) {
+          element.classList.remove("snake");
+        }
+      }
+    }
+
+    // Render snake parts
     for (let part of snake) {
       this.grid[part[0]][part[1]].classList.add("snake");
     }
+
+    // Render snake head
+    // this.grid[snake[0][0]][snake[0][1]].classList.add("head");
   }
 
   // Create grid elements
@@ -65,11 +79,40 @@ class Snake {
     // Random number between 1 and 10
     const startHeight = Math.floor(Math.random() * (height - 2) + 1);
     this.parts = [
-      [startHeight, 1],
-      [startHeight, 2],
       [startHeight, 3],
+      [startHeight, 2],
+      [startHeight, 1],
     ];
     this.direction = "right";
+
+    this.addKeyListeners();
+  }
+
+  // Move snake body in set direction
+  move() {
+    // console.log(this.direction, this.parts);
+    let newPart: [number, number] = [-1, -1];
+
+    // Create new part fpr front of snake
+    if (this.direction === "right") {
+      newPart = [this.parts[0][0], this.parts[0][1] + 1];
+    } else if (this.direction === "down") {
+      newPart = [this.parts[0][0] + 1, this.parts[0][1]];
+    } else if (this.direction === "left") {
+      newPart = [this.parts[0][0], this.parts[0][1] - 1];
+    } else if (this.direction === "up") {
+      newPart = [this.parts[0][0] - 1, this.parts[0][1]];
+    }
+
+    // Add new front of snake and remove back part from snake
+
+    this.parts = [newPart, ...this.parts.slice(0, this.parts.length - 1)];
+  }
+
+  private removeLastPart() {}
+
+  // Add snake controls with arrow keys or W A S D
+  private addKeyListeners() {
     document.addEventListener("keydown", (e) => {
       e.preventDefault();
       switch (e.key) {
@@ -106,3 +149,8 @@ const board = new Board(
 const snake = new Snake(height);
 
 board.renderSnake(snake.parts);
+
+const loop = setInterval(() => {
+  snake.move();
+  board.renderSnake(snake.parts);
+}, 1000);
