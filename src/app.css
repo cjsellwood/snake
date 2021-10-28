@@ -135,13 +135,13 @@ body {
 .row {
   display: flex;
   /* grid-template-columns: repeat(12, 50px); */
-  height: 50px;
+  height: 25px;
 }
 
 .square {
   background-color: white;
-  width: 50px;
-  height: 50px;
+  width: 25px;
+  height: 25px;
   border: 1px solid lightgreen;
 }
 

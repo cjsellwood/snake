@@ -86,6 +86,7 @@ class Snake {
   private length: number;
   public parts: SnakeParts;
   private direction: Direction;
+  private lastDirection: Direction;
   constructor(height: number) {
     this.length = 3;
     // Random number between 1 and 10
@@ -96,6 +97,7 @@ class Snake {
       [startHeight, 1],
     ];
     this.direction = "right";
+    this.lastDirection = "right";
 
     this.addKeyListeners();
   }
@@ -105,14 +107,18 @@ class Snake {
     // console.log(this.direction, this.parts);
     let newPart: [number, number] = [-1, -1];
 
-    // Create new part fpr front of snake
+    // Create new part for front of snake and set which way it was moving
     if (this.direction === "right") {
+      this.lastDirection = "right";
       newPart = [this.parts[0][0], this.parts[0][1] + 1];
     } else if (this.direction === "down") {
+      this.lastDirection = "down";
       newPart = [this.parts[0][0] + 1, this.parts[0][1]];
     } else if (this.direction === "left") {
+      this.lastDirection = "left";
       newPart = [this.parts[0][0], this.parts[0][1] - 1];
     } else if (this.direction === "up") {
+      this.lastDirection = "up";
       newPart = [this.parts[0][0] - 1, this.parts[0][1]];
     }
 
@@ -127,19 +133,27 @@ class Snake {
       switch (e.key) {
         case "d":
         case "ArrowRight":
-          this.direction = "right";
+          if (this.lastDirection !== "left") {
+            this.direction = "right";
+          }
           break;
         case "a":
         case "ArrowLeft":
-          this.direction = "left";
+          if (this.lastDirection !== "right") {
+            this.direction = "left";
+          }
           break;
         case "w":
         case "ArrowUp":
-          this.direction = "up";
+          if (this.lastDirection !== "down") {
+            this.direction = "up";
+          }
           break;
         case "s":
         case "ArrowDown":
-          this.direction = "down";
+          if (this.lastDirection !== "up") {
+            this.direction = "down";
+          }
           break;
         default:
           break;
@@ -148,8 +162,8 @@ class Snake {
   }
 }
 
-const height = 12;
-const width = 12;
+const height = 24;
+const width = 24;
 const board = new Board(
   height,
   width,
@@ -162,9 +176,11 @@ board.renderSnake(snake.parts);
 const gameLoop = setInterval(() => {
   snake.move();
   board.renderSnake(snake.parts);
+  // Check if edge was hit
   const hitEdge = board.hitEdge(snake.parts);
+
+  // Game over
   if (hitEdge) {
     clearInterval(gameLoop);
   }
-  console.log(hitEdge);
-}, 1000);
+}, 200);
