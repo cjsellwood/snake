@@ -156,3 +156,7 @@ body {
 .head {
   border: 4px solid blue;
 }
+
+.fruit {
+  background-color: green;
+}

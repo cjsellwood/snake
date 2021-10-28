@@ -45,6 +45,20 @@ class Board {
     return hitEdge;
   }
 
+  renderFruit(position: Coordinate) {
+    // Remove any old fruit
+    for (let row of this.grid) {
+      for (let element of row) {
+        if (element.classList.contains("fruit")) {
+          element.classList.remove("fruit");
+        }
+      }
+    }
+
+    // Add fruit to board
+    this.grid[position[0]][position[1]].classList.add("fruit");
+  }
+
   // Create grid elements
   private generateGrid(height: number, width: number): Grid {
     const grid: Grid = [];
@@ -79,7 +93,8 @@ class Board {
   }
 }
 
-type SnakeParts = [number, number][];
+type Coordinate = [number, number];
+type SnakeParts = Coordinate[];
 type Direction = "up" | "down" | "left" | "right";
 
 class Snake {
@@ -90,11 +105,11 @@ class Snake {
   constructor(height: number) {
     this.length = 3;
     // Random number between 1 and 10
-    const startHeight = Math.floor(Math.random() * (height - 2) + 1);
+    const startRow = Math.floor(Math.random() * (height - 2) + 1);
     this.parts = [
-      [startHeight, 3],
-      [startHeight, 2],
-      [startHeight, 1],
+      [startRow, 3],
+      [startRow, 2],
+      [startRow, 1],
     ];
     this.direction = "right";
     this.lastDirection = "right";
@@ -103,9 +118,9 @@ class Snake {
   }
 
   // Move snake body in set direction
-  move() {
+  move(fruitPosition: Coordinate) {
     // console.log(this.direction, this.parts);
-    let newPart: [number, number] = [-1, -1];
+    let newPart: Coordinate = [-1, -1];
 
     // Create new part for front of snake and set which way it was moving
     if (this.direction === "right") {
@@ -122,8 +137,14 @@ class Snake {
       newPart = [this.parts[0][0] - 1, this.parts[0][1]];
     }
 
-    // Add new front of snake and remove back part from snake
-    this.parts = [newPart, ...this.parts.slice(0, this.parts.length - 1)];
+    // If collecting fruit, don't take off back of snake
+    if (newPart[0] === fruitPosition[0] && newPart[1] === fruitPosition[1]) {
+      this.parts = [newPart, ...this.parts];
+      fruit.collect();
+    } else {
+      // Add new front of snake and remove back part from snake
+      this.parts = [newPart, ...this.parts.slice(0, this.parts.length - 1)];
+    }
   }
 
   // Add snake controls with arrow keys or W A S D
@@ -162,6 +183,33 @@ class Snake {
   }
 }
 
+class Fruit {
+  public position: Coordinate;
+  public collected: number;
+  constructor(height: number, width: number) {
+    const startRow = Math.floor(Math.random() * (height - 2) + 1);
+    const startColumn = Math.floor(
+      Math.random() * (width - 2 - width / 2) + width / 2
+    );
+    this.position = [startRow, startColumn];
+    this.collected = 0;
+  }
+
+  // Upon collection by snake
+  collect() {
+    this.collected += 1;
+    this.newFruit();
+    board.renderFruit(this.position);
+  }
+
+  newFruit() {
+    this.position = [
+      Math.floor(Math.random() * (height - 2 - 1 + 1) + 1),
+      Math.floor(Math.random() * (width - 2 - 1 + 1) + 1),
+    ];
+  }
+}
+
 const height = 24;
 const width = 24;
 const board = new Board(
@@ -170,11 +218,13 @@ const board = new Board(
   document.getElementById("root")! as HTMLDivElement
 );
 const snake = new Snake(height);
+const fruit = new Fruit(height, width);
 
 board.renderSnake(snake.parts);
+board.renderFruit(fruit.position);
 
 const gameLoop = setInterval(() => {
-  snake.move();
+  snake.move(fruit.position);
   board.renderSnake(snake.parts);
   // Check if edge was hit
   const hitEdge = board.hitEdge(snake.parts);
@@ -182,5 +232,6 @@ const gameLoop = setInterval(() => {
   // Game over
   if (hitEdge) {
     clearInterval(gameLoop);
+    console.log(fruit.collected);
   }
-}, 200);
+}, 100);
