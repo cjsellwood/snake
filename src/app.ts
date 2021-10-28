@@ -12,7 +12,7 @@ class Board {
     this.renderBoard();
   }
 
-  renderSnake(snake: SnakeParts) {
+  renderSnake(snake: SnakeParts): void {
     // console.log(snake);
 
     // Clear previous snake parts
@@ -28,9 +28,21 @@ class Board {
     for (let part of snake) {
       this.grid[part[0]][part[1]].classList.add("snake");
     }
+  }
 
-    // Render snake head
-    // this.grid[snake[0][0]][snake[0][1]].classList.add("head");
+  hitEdge(snake: SnakeParts): boolean {
+    let hitEdge: boolean = false;
+    // Check if snake has hit top or bottom edge
+    if (snake[0][0] === 0 || snake[0][0] === this.grid.length - 1) {
+      hitEdge = true;
+    }
+
+    // Check if snake has hit left or right edge
+    if (snake[0][1] === 0 || snake[0][1] === this.grid[0].length - 1) {
+      hitEdge = true;
+    }
+
+    return hitEdge;
   }
 
   // Create grid elements
@@ -105,11 +117,8 @@ class Snake {
     }
 
     // Add new front of snake and remove back part from snake
-
     this.parts = [newPart, ...this.parts.slice(0, this.parts.length - 1)];
   }
-
-  private removeLastPart() {}
 
   // Add snake controls with arrow keys or W A S D
   private addKeyListeners() {
@@ -150,7 +159,12 @@ const snake = new Snake(height);
 
 board.renderSnake(snake.parts);
 
-const loop = setInterval(() => {
+const gameLoop = setInterval(() => {
   snake.move();
   board.renderSnake(snake.parts);
+  const hitEdge = board.hitEdge(snake.parts);
+  if (hitEdge) {
+    clearInterval(gameLoop);
+  }
+  console.log(hitEdge);
 }, 1000);
