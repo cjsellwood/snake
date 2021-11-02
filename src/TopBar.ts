@@ -78,6 +78,7 @@ export class TopBar {
     // Retrieve previous high score
     const storedScore = localStorage.getItem("highScore");
     if (storedScore) {
+      this.highScore = Number(storedScore);
       this.highScoreElement.textContent = storedScore;
     }
   }
