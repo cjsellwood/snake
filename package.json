@@ -16,6 +16,8 @@
   "license": "ISC",
   "devDependencies": {
     "css-loader": "^6.5.0",
+    "favicons": "^6.2.2",
+    "favicons-webpack-plugin": "^5.0.2",
     "gh-pages": "^3.2.3",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1",
