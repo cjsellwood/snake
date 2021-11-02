@@ -6,13 +6,10 @@ export class Board {
   constructor(height: number, width: number, rootDiv: HTMLDivElement) {
     this.root = rootDiv;
     this.grid = this.generateGrid(width, height);
-
     this.renderBoard();
   }
 
   renderSnake(snake: SnakeParts): void {
-    // console.log(snake);
-
     // Clear previous snake parts
     for (let row of this.grid) {
       for (let element of row) {
@@ -28,6 +25,7 @@ export class Board {
     }
   }
 
+  // Checks if snake will collide with edge
   hitEdge(snake: SnakeParts): boolean {
     let hitEdge: boolean = false;
     // Check if snake has hit top or bottom edge
@@ -43,6 +41,7 @@ export class Board {
     return hitEdge;
   }
 
+  // Show fruit on grid
   renderFruit(position: Coordinate) {
     // Remove any old fruit
     for (let row of this.grid) {

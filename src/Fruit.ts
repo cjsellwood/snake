@@ -22,6 +22,7 @@ export class Fruit {
     this.newFruit(snakeParts);
   }
 
+  // Create new fruit
   newFruit(snake: Coordinate[]) {
     let positionFree = false;
     let row: number | undefined;

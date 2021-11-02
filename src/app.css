@@ -139,17 +139,12 @@ body {
 
 .row {
   display: flex;
-  /* grid-template-columns: repeat(12, 50px); */
-  /* height: 25px; */
   height: calc(min(75vw, 75vh) / 24);
   width: calc(min(75vw, 75vh));
 }
 
 .square {
   background-color: var(--square-color);
-  /* width: 25px; */
-  /* height: 25px; */
-  /* border: 1px solid lightgreen; */
   height: 100%;
   width: 100%;
 }

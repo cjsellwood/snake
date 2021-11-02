@@ -29,7 +29,6 @@ module.exports = {
     }),
     new FaviconsWebpackPlugin({
       logo: "./src/icon.png",
-      // inject: true
       favicons: {
         icons: {
           android: [

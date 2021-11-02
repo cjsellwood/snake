@@ -1,13 +1,11 @@
 import { SnakeParts, Direction, Coordinate } from "./types";
 
 export class Snake {
-  private length: number;
   public parts: SnakeParts;
   private direction: Direction;
   private lastDirection: Direction;
   constructor(height: number) {
-    this.length = 3;
-    // Random number between 1 and 10
+    // Random row excluding edges
     const startRow = Math.floor(Math.random() * (height - 2) + 1);
     this.parts = [
       [startRow, 3],
@@ -22,10 +20,9 @@ export class Snake {
 
   // Move snake body in set direction
   move(fruitPosition: Coordinate) {
-    // console.log(this.direction, this.parts);
-    let newPart: Coordinate = [-1, -1];
-
+    
     // Create new part for front of snake and set which way it was moving
+    let newPart!: Coordinate
     if (this.direction === "right") {
       this.lastDirection = "right";
       newPart = [this.parts[0][0], this.parts[0][1] + 1];
@@ -51,8 +48,8 @@ export class Snake {
     }
   }
 
+  // Check if snake head will run into another part of the snake
   hitSelf(): boolean {
-    let hitSelf: boolean = false;
     const snakeHead = this.parts[0];
     for (let part of this.parts.slice(1, this.parts.length)) {
       if (snakeHead[0] === part[0] && snakeHead[1] === part[1]) {
